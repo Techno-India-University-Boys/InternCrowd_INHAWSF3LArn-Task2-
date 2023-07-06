@@ -1,112 +1,87 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-struct FamilyMember
-{
-    string name;
-    string dob;
-    string email;
-};
 int main()
 {
-    vector<FamilyMember> familyMembers;
     int choice;
     while (true)
     {
-
-        cout << "Enter the choice for the operation you want to perform:" << endl;
-        cout<<endl;
-        cout << "1. Add a new family member." << endl;
-        cout << "2. Search for the family member." << endl;
-        cout << "3. Show all the family members." << endl;
-        cout << "4. Exit the program:" << endl;
+        cout << "Hello, Would you want to login,register or exit?" << endl;
+        cout << "1. Login" << endl;
+        cout << "2. Register" << endl;
+        cout << "3. Exit" << endl;
         cin >> choice;
         switch (choice)
         {
         case 1:
         {
-            FamilyMember member;
-            char option;
-            do
+            ifstream file("record.txt");
+            if (!file.is_open())
             {
-                cout << "Enter the name of the family member:" << endl;
-                cin.ignore();
-                getline(cin, member.name);
+                cout << "Failed to open the file!...." << endl;
+                return 1;
+            }
+            string userName, password;
+            cout << "Enter your Username to proceed :" << endl;
+            cin >> userName;
+            cout << "Enter your Password to proceed :" << endl;
+            cin >> password;
 
-                cout << "Enter the date of birth of the family member in DD/MM/YYYY format:" << endl;
-                getline(cin, member.dob);
-
-                cout << "Enter the email of the family member:" << endl;
-                getline(cin, member.email);
-
-                familyMembers.push_back(member);
-
-                cout << "Do you want to add more data (Y/N)?" << endl;
-                cin >> option;
-                cout<<endl;
-            } while (option == 'Y' || option == 'y');
-            cout << "Family member added successfully." << endl;
-            cout<<endl;
-            break;
-        }
-        case 2:
-        {
-            string searchName;
-            cout << "Enter the name to search: "<<endl;;
-            cin.ignore();
-            getline(cin, searchName);
-
-            transform(searchName.begin(), searchName.end(), searchName.begin(), ::tolower);
-
+            string line;
             bool found = false;
-            for (const auto &member : familyMembers)
+            while (getline(file, line))
             {
-                string name = member.name;
-                transform(name.begin(), name.end(), name.begin(), ::tolower);
-
-                if (name == searchName)
+                if (line.find(userName) != string::npos)
                 {
-                    cout << "Family member found:" << endl;
-                    cout << "Name: " << member.name << endl;
-                    cout << "Date of Birth: " << member.dob << endl;
-                    cout << "Email: " << member.email << endl;
+                    cout << "Loged in Successfully. " << line << endl;
                     found = true;
-                    break;
                 }
             }
 
             if (!found)
             {
-                cout << "Family member not found." << endl;
+                cout << "UserName not found." << endl;
             }
+
+            file.close();
+            break;
+        }
+
+        case 2:
+        {
+            string filename = "record.txt";
+            ofstream outfile(filename, ios::app);
+            if (outfile.is_open())
+            {
+                string firstName, lastName, email, password, userName;
+                cout << "Enter your first name:" << endl;
+                cin.ignore();
+                getline(cin, firstName);
+                cout << "Enter your last name:" << endl;
+                getline(cin, lastName);
+                cout << "Enter your email address:" << endl;
+                getline(cin, email);
+                cout << "Enter the User Name:" << endl;
+                getline(cin, userName);
+                cout << "Enter your password:" << endl;
+                getline(cin, password);
+
+                outfile << "FirstName: " << firstName << endl;
+                outfile << "LastName: " << lastName << endl;
+                outfile << "Email: " << email << endl;
+                outfile << "UserName: " << userName << endl;
+                outfile << "Password: " << password << endl;
+                cin.ignore();
+            }
+            outfile.close();
+            cout << "Record has been added successfully:" << endl;
             break;
         }
         case 3:
-        {
-            int n = familyMembers.size();
-            cout << "Here is the list" << endl;
-            for (int i = 0; i < n; i++)
-            {
-                string name=familyMembers[i].name;
-                string dob=familyMembers[i].dob;
-                string email=familyMembers[i].email;
-                cout<<"Name : "<<name<<endl;
-                cout<<"Date of Birth : "<<dob<<endl;
-                cout<<"Email : "<<email<<endl;
-                cout << endl;
-            }
-            break;
-        }
-        case 4:
-        {
             cout << "Exiting the program." << endl;
             return 0;
-        }
         default:
-        {
-            cout << "Wrong Choice:" << endl;
-            break;
-        }
+            cout << "Wrong Choice" << endl;
+            return 1;
         }
     }
     return 0;
